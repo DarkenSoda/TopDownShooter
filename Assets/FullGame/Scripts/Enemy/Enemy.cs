@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.Find("Player").transform;
 
-        player.GetComponent<PlayerHealth>().OnDeath += (_, _) => { enabled = false; };
+        player.GetComponent<PlayerHealth>().OnDeath += OnPlayerDeath;
 
         currentHealth = maxHealth;
 
@@ -69,11 +69,17 @@ public class Enemy : MonoBehaviour, IDamageable
         if (deathSound != null)
             AudioSource.PlayClipAtPoint(deathSound, transform.position);
 
+        player.GetComponent<PlayerHealth>().OnDeath -= OnPlayerDeath;
         OnDeath?.Invoke(this, EventArgs.Empty);
         Destroy(gameObject);
     }
 
     public void Heal(int amount) { }
+
+    private void OnPlayerDeath(object sender, EventArgs e)
+    {
+        enabled = false;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {

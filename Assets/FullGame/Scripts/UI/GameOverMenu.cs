@@ -23,7 +23,11 @@ public class GameOverMenu : MonoBehaviour
 
     private void Start()
     {
-        restartButton.onClick.AddListener(() => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex));
+        restartButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            Time.timeScale = 1f;
+        });
 
         quitButton.onClick.AddListener(() => Application.Quit());
     }
