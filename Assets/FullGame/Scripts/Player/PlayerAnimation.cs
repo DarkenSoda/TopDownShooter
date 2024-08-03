@@ -1,31 +1,34 @@
 using UnityEngine;
 
-public class PlayerAnimation : MonoBehaviour
+namespace Game.FullGame
 {
-    [Header("Animations")]
-    [SerializeField] private Animator bodyAnimator;
-    [SerializeField] private Animator legAnimator;
-
-    private Player player;
-    private Shooting shooting;
-
-    private void Awake()
+    public class PlayerAnimation : MonoBehaviour
     {
-        player = GetComponent<Player>();
-        shooting = GetComponent<Shooting>();
-    }
+        [Header("Animations")]
+        [SerializeField] private Animator bodyAnimator;
+        [SerializeField] private Animator legAnimator;
 
-    private void Update()
-    {
-        legAnimator.SetBool("IsMoving", player.IsMoving);
-        bodyAnimator.SetBool("IsMoving", player.IsMoving);
-        bodyAnimator.SetBool("IsShooting", shooting.IsShooting);
-    }
+        private Player player;
+        private Shooting shooting;
 
-    private void OnDisable()
-    {
-        legAnimator.SetBool("IsMoving", false);
-        bodyAnimator.SetBool("IsMoving", false);
-        bodyAnimator.SetBool("IsShooting", false);
+        private void Awake()
+        {
+            player = GetComponent<Player>();
+            shooting = GetComponent<Shooting>();
+        }
+
+        private void Update()
+        {
+            legAnimator.SetBool("IsMoving", player.IsMoving);
+            bodyAnimator.SetBool("IsMoving", player.IsMoving);
+            bodyAnimator.SetBool("IsShooting", shooting.IsShooting);
+        }
+
+        private void OnDisable()
+        {
+            legAnimator.SetBool("IsMoving", false);
+            bodyAnimator.SetBool("IsMoving", false);
+            bodyAnimator.SetBool("IsShooting", false);
+        }
     }
 }

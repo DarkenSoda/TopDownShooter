@@ -1,56 +1,59 @@
 using System.Collections;
 using UnityEngine;
 
-public class WaveManager : MonoBehaviour
+namespace Game.FullGame
 {
-    private Transform player;
-    [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private int startEnemyCount = 3;
-    [SerializeField] private int enemyMultiplier = 2;
-    [SerializeField] private Vector2 spawnDistanceFromPlayer = new Vector2(5, 8);
-    [SerializeField] private float timeBetweenEnemySpawn = 0.2f;
-
-    private int currentWave = 0;
-    private int enemyCount = 0;
-    private int enemiesSpawnedThisWave;
-
-    private void Awake()
+    public class WaveManager : MonoBehaviour
     {
-        enemiesSpawnedThisWave = startEnemyCount;
+        private Transform player;
+        [SerializeField] private GameObject enemyPrefab;
+        [SerializeField] private int startEnemyCount = 3;
+        [SerializeField] private int enemyMultiplier = 2;
+        [SerializeField] private Vector2 spawnDistanceFromPlayer = new Vector2(5, 8);
+        [SerializeField] private float timeBetweenEnemySpawn = 0.2f;
 
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        private int currentWave = 0;
+        private int enemyCount = 0;
+        private int enemiesSpawnedThisWave;
 
-        player.GetComponent<PlayerHealth>().OnDeath += (_, _) => StopAllCoroutines();
-    }
-
-    private void Update()
-    {
-        if (enemyCount == 0)
+        private void Awake()
         {
-            currentWave++;
+            enemiesSpawnedThisWave = startEnemyCount;
 
-            StopAllCoroutines();
+            player = GameObject.FindGameObjectWithTag("Player").transform;
 
-            enemiesSpawnedThisWave = startEnemyCount + (int)Mathf.Pow(enemyMultiplier, currentWave - 1);
-            enemyCount = enemiesSpawnedThisWave;
-            StartCoroutine(SpawnEnemies());
+            player.GetComponent<PlayerHealth>().OnDeath += (_, _) => StopAllCoroutines();
         }
-    }
 
-    private IEnumerator SpawnEnemies()
-    {
-        for (int i = 0; i < enemiesSpawnedThisWave; i++)
+        private void Update()
         {
-            float randomAngle = Random.Range(0f, 2f * Mathf.PI);
-            float distance = Random.Range(spawnDistanceFromPlayer.x, spawnDistanceFromPlayer.y);
-            Vector3 spawnPosition = player.position +
-                new Vector3(Mathf.Cos(randomAngle), Mathf.Sin(randomAngle), 0) * distance;
+            if (enemyCount == 0)
+            {
+                currentWave++;
 
-            GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+                StopAllCoroutines();
 
-            enemy.GetComponent<Enemy>().OnDeath += (_, _) => enemyCount--;
+                enemiesSpawnedThisWave = startEnemyCount + (int)Mathf.Pow(enemyMultiplier, currentWave - 1);
+                enemyCount = enemiesSpawnedThisWave;
+                StartCoroutine(SpawnEnemies());
+            }
+        }
 
-            yield return new WaitForSeconds(timeBetweenEnemySpawn);
+        private IEnumerator SpawnEnemies()
+        {
+            for (int i = 0; i < enemiesSpawnedThisWave; i++)
+            {
+                float randomAngle = Random.Range(0f, 2f * Mathf.PI);
+                float distance = Random.Range(spawnDistanceFromPlayer.x, spawnDistanceFromPlayer.y);
+                Vector3 spawnPosition = player.position +
+                    new Vector3(Mathf.Cos(randomAngle), Mathf.Sin(randomAngle), 0) * distance;
+
+                GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+
+                enemy.GetComponent<Enemy>().OnDeath += (_, _) => enemyCount--;
+
+                yield return new WaitForSeconds(timeBetweenEnemySpawn);
+            }
         }
     }
 }

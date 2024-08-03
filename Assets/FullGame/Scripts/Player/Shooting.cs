@@ -1,47 +1,50 @@
 using UnityEngine;
 
-public class Shooting : MonoBehaviour
+namespace Game.FullGame
 {
-    [Header("Shooting")]
-    [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private Transform firePoint;
-    [SerializeField] private float fireRate = .5f;
-    [SerializeField] private float bulletSpeed = 10f;
-
-    [SerializeField] private AudioClip shootingSound;
-
-    private float lastFireTime;
-
-    public bool IsShooting { get; private set; }
-
-    private void Update()
+    public class Shooting : MonoBehaviour
     {
-        IsShooting = Input.GetMouseButton(0);
+        [Header("Shooting")]
+        [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private Transform firePoint;
+        [SerializeField] private float fireRate = .5f;
+        [SerializeField] private float bulletSpeed = 10f;
 
-        if (IsShooting && Time.time > fireRate + lastFireTime)
+        [SerializeField] private AudioClip shootingSound;
+
+        private float lastFireTime;
+
+        public bool IsShooting { get; private set; }
+
+        private void Update()
         {
-            Shoot();
-            lastFireTime = Time.time;
+            IsShooting = Input.GetMouseButton(0);
+
+            if (IsShooting && Time.time > fireRate + lastFireTime)
+            {
+                Shoot();
+                lastFireTime = Time.time;
+            }
         }
-    }
 
-    private void Shoot()
-    {
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        private void Shoot()
+        {
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 
-        Bullet bulletComponent = bullet.GetComponent<Bullet>();
-        bulletComponent.SetOwner(gameObject);
+            Bullet bulletComponent = bullet.GetComponent<Bullet>();
+            bulletComponent.SetOwner(gameObject);
 
-        Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+            Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
 
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 firePos = firePoint.position;
-        Vector2 aimDirection = (mousePosition - firePos).normalized;
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 firePos = firePoint.position;
+            Vector2 aimDirection = (mousePosition - firePos).normalized;
 
-        bulletRb.AddForce(aimDirection * bulletSpeed, ForceMode2D.Impulse);
+            bulletRb.AddForce(aimDirection * bulletSpeed, ForceMode2D.Impulse);
 
-        AudioSource.PlayClipAtPoint(shootingSound, Camera.main.transform.position);
+            AudioSource.PlayClipAtPoint(shootingSound, Camera.main.transform.position);
 
-        Destroy(bullet, 2f);
+            Destroy(bullet, 2f);
+        }
     }
 }

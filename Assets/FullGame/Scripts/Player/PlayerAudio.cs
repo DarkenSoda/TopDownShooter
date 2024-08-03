@@ -2,29 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAudio : MonoBehaviour
+namespace Game.FullGame
 {
-    [SerializeField] private AudioClip movementSound;
-    private AudioSource audioSource;
-
-    private Player player;
-
-    private void Awake()
+    public class PlayerAudio : MonoBehaviour
     {
-        player = GetComponent<Player>();
-        audioSource = GetComponent<AudioSource>();
-    }
+        [SerializeField] private AudioClip movementSound;
+        private AudioSource audioSource;
 
-    private void Update()
-    {
-        if (player.IsMoving && !audioSource.isPlaying)
+        private Player player;
+
+        private void Awake()
         {
-            audioSource.clip = movementSound;
-            audioSource.Play();
+            player = GetComponent<Player>();
+            audioSource = GetComponent<AudioSource>();
         }
-        else if (!player.IsMoving && audioSource.isPlaying)
+
+        private void Update()
         {
-            audioSource.Stop();
+            if (player.IsMoving && !audioSource.isPlaying)
+            {
+                audioSource.clip = movementSound;
+                audioSource.Play();
+            }
+            else if (!player.IsMoving && audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
         }
     }
 }

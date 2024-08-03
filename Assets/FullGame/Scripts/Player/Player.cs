@@ -1,66 +1,69 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+namespace Game.FullGame
 {
-    [Header("Movement")]
-    [SerializeField] private float speed = 5f;
-
-    private Rigidbody2D rb;
-    private PlayerHealth playerHealth;
-    private PlayerDash playerDash;
-
-    public Vector2 MoveDirection { get; private set; }
-    public Vector2 AimDirection { get; private set; }
-
-    public bool IsMoving { get; private set; }
-
-    private void Awake()
+    public class Player : MonoBehaviour
     {
-        rb = GetComponent<Rigidbody2D>();
-        playerHealth = GetComponent<PlayerHealth>();
-        playerDash = GetComponent<PlayerDash>();
+        [Header("Movement")]
+        [SerializeField] private float speed = 5f;
 
-        playerHealth.OnDeath += (_, _) =>
+        private Rigidbody2D rb;
+        private PlayerHealth playerHealth;
+        private PlayerDash playerDash;
+
+        public Vector2 MoveDirection { get; private set; }
+        public Vector2 AimDirection { get; private set; }
+
+        public bool IsMoving { get; private set; }
+
+        private void Awake()
         {
-            Destroy(gameObject);
-        };
-    }
+            rb = GetComponent<Rigidbody2D>();
+            playerHealth = GetComponent<PlayerHealth>();
+            playerDash = GetComponent<PlayerDash>();
 
-    private void Update()
-    {
-        ProcessInputs();
+            playerHealth.OnDeath += (_, _) =>
+            {
+                Destroy(gameObject);
+            };
+        }
 
-        IsMoving = MoveDirection != Vector2.zero;
-    }
+        private void Update()
+        {
+            ProcessInputs();
 
-    private void FixedUpdate()
-    {
-        Move();
-        Rotate();
-    }
+            IsMoving = MoveDirection != Vector2.zero;
+        }
 
-    private void ProcessInputs()
-    {
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveY = Input.GetAxisRaw("Vertical");
+        private void FixedUpdate()
+        {
+            Move();
+            Rotate();
+        }
 
-        MoveDirection = new Vector2(moveX, moveY).normalized;
+        private void ProcessInputs()
+        {
+            float moveX = Input.GetAxisRaw("Horizontal");
+            float moveY = Input.GetAxisRaw("Vertical");
 
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        AimDirection = (mousePosition - rb.position).normalized;
-    }
+            MoveDirection = new Vector2(moveX, moveY).normalized;
 
-    private void Move()
-    {
-        if (playerDash.IsDashing)
-            return;
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            AimDirection = (mousePosition - rb.position).normalized;
+        }
 
-        rb.velocity = MoveDirection * speed;
-    }
+        private void Move()
+        {
+            if (playerDash.IsDashing)
+                return;
 
-    private void Rotate()
-    {
-        float angle = Mathf.Atan2(AimDirection.y, AimDirection.x) * Mathf.Rad2Deg;
-        rb.rotation = angle;
+            rb.velocity = MoveDirection * speed;
+        }
+
+        private void Rotate()
+        {
+            float angle = Mathf.Atan2(AimDirection.y, AimDirection.x) * Mathf.Rad2Deg;
+            rb.rotation = angle;
+        }
     }
 }

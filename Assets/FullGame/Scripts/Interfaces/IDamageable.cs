@@ -1,10 +1,13 @@
 using System;
 
-public interface IDamageable
+namespace Game.FullGame
 {
-    public event EventHandler<float> OnHealthChanged;
-    public event EventHandler OnDeath;
+    public interface IDamageable
+    {
+        public event EventHandler<float> OnHealthChanged;
+        public event EventHandler OnDeath;
 
-    void TakeDamage(int damage);
-    void Heal(int amount);
+        void TakeDamage(int damage);
+        void Heal(int amount);
+    }
 }
